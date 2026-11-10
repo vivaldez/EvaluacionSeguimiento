@@ -331,3 +331,76 @@ window.MINERD_DATA = {
         indicadores: [
           { id: '1.1', texto: 'Analiza y describe procesos y estructuras de los seres vivos a partir de observaciones o modelos, estableciendo relaciones entre sus funciones y el entorno en Ciencias de la Vida.', rubrica: { S: 'Describe con rigor estructuras biológicas y su relación funcional con el entorno.', A: 'Identifica partes o estructuras sin explicar su función.', E: 'No reconoce los procesos ni estructuras de los seres vivos.' } },
           { id: '1.2', texto: 'Interpreta y compara procesos y estructuras de la materia y la energía a partir de observaciones, experimentos o modelos, identificando causas y efectos en los fenómenos en Ciencias Físicas.', rubrica: { S: 'Compara estados/propiedades de la materia y energía identificando causas y efectos.', A: 'Reconoce el fenómeno físico sin establecer la relación causa-efecto.', E: 'No interpreta los procesos de materia y energía.' } },
+          { id: '1.3', texto: 'Relaciona y argumenta fenómenos de la Tierra y del universo a partir de observaciones, modelos o representaciones, formulando ideas sobre sus causas y transformaciones.', rubrica: { S: 'Relaciona y argumenta fenómenos de la Tierra y del universo explicando causas y transformaciones con apoyo de modelos.', A: 'Relaciona fenómenos terrestres o del universo con explicaciones parciales.', E: 'No relaciona ni argumenta los fenómenos de la Tierra y del universo.' } },
+          { id: '2.1', texto: 'Analiza y describe procesos y estructuras de los seres vivos a partir de observaciones o modelos, valorando su relación con las funciones vitales y el ambiente en Ciencias de la Vida.', rubrica: { S: 'Analiza procesos y estructuras de los seres vivos valorando su relación con las funciones vitales y el ambiente.', A: 'Describe procesos de los seres vivos con relación parcial con el ambiente.', E: 'No analiza ni describe los procesos y estructuras de los seres vivos.' } },
+          { id: '2.2', texto: 'Interpreta y compara procesos y estructuras vinculados con la materia, la energía y sus transformaciones a partir de observaciones, mediciones o modelos experimentales en Ciencias Físicas.', rubrica: { S: 'Interpreta y compara procesos de materia y energía con mediciones o modelos experimentales.', A: 'Interpreta parcialmente los procesos de materia y energía.', E: 'No interpreta los procesos vinculados con la materia y la energía.' } },
+          { id: '2.3', texto: 'Relaciona y argumenta fenómenos de la Tierra y del universo a partir de observaciones, modelos o simulaciones, formulando inferencias sobre sus causas y efectos.', rubrica: { S: 'Relaciona fenómenos de la Tierra y del universo y formula inferencias coherentes sobre causas y efectos.', A: 'Relaciona los fenómenos con inferencias parciales.', E: 'No relaciona los fenómenos ni formula inferencias.' } }
+        ]
+      }
+    },
+
+    6: {
+      LE: {
+        competencias: [
+          { id: 'C1', nombre: 'Comprensión Escrita y Valoración Crítica', indicadores: ['1.1', '1.2', '1.3'] },
+          { id: 'C2', nombre: 'Producción Escrita', indicadores: ['2.1', '2.2', '2.3'] }
+        ],
+        indicadores: [
+          { id: '1.1', texto: 'Identifica información explícita e implícita en textos diversos.', rubrica: { S: 'Identifica con precisión información explícita e implícita en textos diversos.', A: 'Identifica información explícita y parte de la implícita.', E: 'No identifica información explícita ni implícita.' } },
+          { id: '1.2', texto: 'Analiza recursos lingüísticos y organizativos del texto que lee para comprender mejor su sentido.', rubrica: { S: 'Analiza recursos lingüísticos y organizativos y explica su efecto en el sentido del texto.', A: 'Identifica recursos sin analizar plenamente su función.', E: 'No analiza los recursos lingüísticos ni organizativos.' } },
+          { id: '1.3', texto: 'Valora críticamente la información y emite juicios fundamentados.', rubrica: { S: 'Valora críticamente la información y emite juicios fundamentados en evidencias.', A: 'Emite juicios con fundamentación parcial.', E: 'No valora críticamente ni fundamenta juicios.' } },
+          { id: '2.1', texto: 'Expresa por escrito ideas y resultados de manera lógica, crítica con claridad y coherencia, a través de diversos textos.', rubrica: { S: 'Expresa ideas por escrito de manera lógica, clara, coherente y crítica.', A: 'Expresa ideas comprensibles con fallas de coherencia o claridad.', E: 'No expresa por escrito ideas con claridad ni coherencia.' } },
+          { id: '2.2', texto: 'Emplea normas gramaticales y ortográficas al escribir diversos textos.', rubrica: { S: 'Emplea correctamente normas gramaticales y ortográficas.', A: 'Emplea las normas con errores frecuentes que no impiden la comprensión.', E: 'No emplea normas gramaticales ni ortográficas básicas.' } },
+          { id: '2.3', texto: 'Integra recursos lingüísticos y discursivos al escribir diversos textos.', rubrica: { S: 'Integra recursos lingüísticos y discursivos adecuados al tipo de texto.', A: 'Integra algunos recursos con uso limitado.', E: 'No integra recursos lingüísticos ni discursivos.' } }
+        ]
+      },
+      MAT: {
+        competencias: [
+          { id: 'C1', nombre: 'Comunicación Matemática', indicadores: ['1.1', '1.2', '1.3'] },
+          { id: 'C2', nombre: 'Resolución de Problemas', indicadores: ['2.1', '2.2'] },
+          { id: 'C3', nombre: 'Modelación Matemática', indicadores: ['3.1', '3.2'] }
+        ],
+        indicadores: [
+          { id: '1.1', texto: 'Comunica ideas matemáticas de manera clara.', rubrica: { S: 'Comunica ideas matemáticas con claridad, precisión y vocabulario adecuado.', A: 'Comunica ideas matemáticas con imprecisiones.', E: 'No comunica ideas matemáticas de manera comprensible.' } },
+          { id: '1.2', texto: 'Argumenta procedimientos y resultados.', rubrica: { S: 'Argumenta procedimientos y resultados con justificación matemática válida.', A: 'Argumenta parcialmente sus procedimientos.', E: 'No argumenta procedimientos ni resultados.' } },
+          { id: '1.3', texto: 'Utiliza representaciones matemáticas adecuadas.', rubrica: { S: 'Utiliza representaciones matemáticas adecuadas y las interpreta correctamente.', A: 'Utiliza representaciones con errores parciales.', E: 'No utiliza representaciones matemáticas adecuadas.' } },
+          { id: '2.1', texto: 'Emplea procedimientos adecuados para resolver problemas.', rubrica: { S: 'Emplea procedimientos adecuados y resuelve correctamente el problema.', A: 'Emplea el procedimiento adecuado con errores de cálculo.', E: 'No emplea procedimientos adecuados.' } },
+          { id: '2.2', texto: 'Valora la utilidad de la matemática en situaciones reales.', rubrica: { S: 'Valora y explica la utilidad de la matemática en situaciones reales.', A: 'Reconoce la utilidad matemática sin explicarla plenamente.', E: 'No valora la utilidad de la matemática.' } },
+          { id: '3.1', texto: 'Representa situaciones de su entorno mediante modelos matemáticos.', rubrica: { S: 'Representa situaciones del entorno mediante modelos matemáticos pertinentes.', A: 'Representa parcialmente la situación mediante un modelo.', E: 'No representa la situación mediante modelos matemáticos.' } },
+          { id: '3.2', texto: 'Valida el modelo propuesto con los datos.', rubrica: { S: 'Valida el modelo propuesto contrastándolo correctamente con los datos.', A: 'Valida parcialmente el modelo propuesto.', E: 'No valida el modelo propuesto.' } }
+        ]
+      },
+      CS: {
+        competencias: [
+          { id: 'C1', nombre: 'Uso Crítico de Fuentes y Geografía', indicadores: ['1.1', '1.2', '1.3'] },
+          { id: 'C2', nombre: 'Análisis Histórico', indicadores: ['2.1', '2.2', '2.3'] }
+        ],
+        indicadores: [
+          { id: '1.1', texto: 'Reconoce fuentes confiables y la autoría en informaciones geográficas e históricas.', rubrica: { S: 'Reconoce fuentes confiables e identifica correctamente su autoría.', A: 'Reconoce parcialmente la confiabilidad o la autoría.', E: 'No reconoce fuentes confiables ni su autoría.' } },
+          { id: '1.2', texto: 'Distingue la clasificación e importancia de la geografía (física, humana, económica).', rubrica: { S: 'Distingue la geografía física, humana y económica y explica su importancia.', A: 'Distingue algunas ramas de la geografía.', E: 'No distingue la clasificación de la geografía.' } },
+          { id: '1.3', texto: 'Analiza informaciones sobre civilizaciones antiguas y modernas y sus aportes.', rubrica: { S: 'Analiza civilizaciones antiguas y modernas y explica sus aportes.', A: 'Describe civilizaciones sin analizar sus aportes.', E: 'No analiza las civilizaciones ni sus aportes.' } },
+          { id: '2.1', texto: 'Analiza acontecimientos históricos relacionados con las civilizaciones antiguas y modernas y con la historia de América, identificando causas y consecuencias de procesos relevantes.', rubrica: { S: 'Analiza acontecimientos históricos identificando causas y consecuencias relevantes.', A: 'Identifica causas o consecuencias de forma parcial.', E: 'No analiza los acontecimientos históricos.' } },
+          { id: '2.2', texto: 'Caracteriza contextos políticos, sociales, económicos y culturales por periodos y regiones.', rubrica: { S: 'Caracteriza contextos políticos, sociales, económicos y culturales por periodos y regiones.', A: 'Caracteriza parcialmente algún contexto.', E: 'No caracteriza los contextos históricos.' } },
+          { id: '2.3', texto: 'Sustenta valoraciones críticas a partir de información histórica confiable, diferenciando hechos, opiniones y datos que respaldan una conclusión.', rubrica: { S: 'Sustenta valoraciones críticas diferenciando hechos, opiniones y datos.', A: 'Emite valoraciones con diferenciación parcial.', E: 'No sustenta valoraciones críticas ni diferencia hechos de opiniones.' } }
+        ]
+      },
+      CN: {
+        competencias: [
+          { id: 'C1', nombre: 'Explicación Científica', indicadores: ['1.1', '1.2', '1.3'] },
+          { id: 'C2', nombre: 'Indagación y Análisis de Datos', indicadores: ['2.1', '2.2'] }
+        ],
+        indicadores: [
+          { id: '1.1', texto: 'Formula preguntas e hipótesis a partir de observaciones en el entorno y experimentos realizados en Ciencias de la Vida.', rubrica: { S: 'Formula preguntas e hipótesis pertinentes a partir de observaciones y experimentos.', A: 'Formula preguntas o hipótesis parciales.', E: 'No formula preguntas ni hipótesis.' } },
+          { id: '1.2', texto: 'Aplica ideas y conceptos en Ciencias Física a partir de experimentos y diseño de proyectos.', rubrica: { S: 'Aplica ideas y conceptos de Ciencias Físicas en experimentos y proyectos.', A: 'Aplica parcialmente los conceptos físicos.', E: 'No aplica ideas ni conceptos de Ciencias Físicas.' } },
+          { id: '1.3', texto: 'Explica fenómenos mediante modelos y representaciones en Ciencias de la Tierra y el Universo.', rubrica: { S: 'Explica fenómenos mediante modelos y representaciones adecuados.', A: 'Explica parcialmente los fenómenos representados.', E: 'No explica los fenómenos mediante modelos.' } },
+          { id: '2.1', texto: 'Organiza y ejecuta procedimientos experimentales en Ciencias de la Vida.', rubrica: { S: 'Organiza y ejecuta procedimientos experimentales de forma ordenada y segura.', A: 'Ejecuta el procedimiento con desorden parcial.', E: 'No organiza ni ejecuta el procedimiento experimental.' } },
+          { id: '2.2', texto: 'Analiza e interpreta datos de exploraciones o experimentos, teorías y principios en Ciencias Físicas.', rubrica: { S: 'Analiza e interpreta datos experimentales estableciendo conclusiones coherentes.', A: 'Interpreta datos aislados sin conclusión completa.', E: 'No analiza ni interpreta los datos experimentales.' } }
+        ]
+      }
+    }
+  },
+
+  // Se llena desde Neon.tech (/api/state). Si la API no responde, desde localStorage.
+  // No contiene datos de prueba.
+  estudiantes: []
+};
