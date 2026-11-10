@@ -1,1 +1,9 @@
-{"name":"evaluaciones-primaria","version":"1.0.0","private":true,"dependencies":{"@neondatabase/serverless":"^0.10.4"}}
+{
+  "name": "minerd-evaluacion-seguimiento-primaria",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4"
+  }
+}
