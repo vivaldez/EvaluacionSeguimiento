@@ -8,15 +8,15 @@ window.MINERD_DATA = {
 
   centroDefault: {
     correo: 'coordinacionprimaria@colegiosantodomingo.edu.do',
-    codigo_sigerd: '00000',
+    codigo_sigerd: '05102',
     nombre_centro: 'COLEGIO SANTO DOMINGO',
     regional: '15 - Santo Domingo III',
     distrito: '15-03',
     sector: 'Privado',
     tipo: 'Urbano',
     tanda: 'Matutina',
-    coordinadora_c1: 'Coordinación Primer Ciclo',
-    coordinadora_c2: 'Marije Guerrero'
+    coordinadora_c1: 'Marije Guerrero',
+    coordinadora_c2: 'María Angel Herrera'
   },
 
   nivelesLectura1erCiclo: [
