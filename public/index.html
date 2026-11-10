@@ -1,63 +1,167 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Evaluaciones Primaria — Seguimiento y Diagnóstica</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box}body{margin:0;font-family:'Plus Jakarta Sans',system-ui;background:#f1f5f9;color:#0f172a}header{background:linear-gradient(135deg,#0b3b6e,#2563eb);color:#fff;padding:28px 18px}h1{font-family:Merriweather,serif;margin:0}main{max-width:1180px;margin:auto;padding:16px}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.card{background:#fff;border-radius:18px;padding:18px;box-shadow:0 8px 24px #0001;cursor:pointer;border:2px solid transparent}.card:hover{border-color:#2563eb}.btn{background:#2563eb;color:#fff;border:0;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700}.btn.g{background:#fff;color:#1e3a5f;border:1px solid #cbd5e1}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}select,input{padding:10px;border:1px solid #cbd5e1;border-radius:10px;background:#fff}table{border-collapse:separate;border-spacing:0;background:#fff;min-width:760px}th,td{border-right:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;padding:7px;font-size:12px;text-align:center}th{background:#0b3b6e;color:#fff}.wrap{overflow:auto;max-height:72vh;border-radius:12px;box-shadow:0 8px 24px #0001}thead th{position:sticky;top:0;z-index:5}thead tr:nth-child(2) th{top:34px}td:first-child,th:first-child{position:sticky;left:0;background:#eff6ff;z-index:4;min-width:42px}td:nth-child(2),th:nth-child(2){position:sticky;left:42px;background:#fff;z-index:4;min-width:190px;text-align:left}thead th:nth-child(2){background:#0b3b6e}.seg{display:flex;border:1px solid #cbd5e1;border-radius:999px;overflow:hidden}.seg button{border:0;padding:7px 10px;background:#fff;cursor:pointer;font-weight:800}.seg button.on[data-v=E]{background:#fecaca}.seg button.on[data-v=A]{background:#fde68a}.seg button.on[data-v=S]{background:#bbf7d0}.seg button.on[data-v=""]{background:#e2e8f0}.kpi{background:#fff;border-radius:14px;padding:14px}.bar{height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:#2563eb}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.muted{color:#64748b;font-size:13px}.rub{background:#fffbeb;border:1px solid #f59e0b;border-radius:12px;padding:12px;margin:10px 0;font-size:13px}.rub summary{cursor:pointer;font-weight:800}.rubBody{white-space:pre-wrap;line-height:1.55;max-height:60vh;overflow:auto;margin-top:10px;background:#fff;padding:12px;border-radius:8px}.stack{display:flex;height:22px;border-radius:99px;overflow:hidden;background:#e2e8f0;margin:8px 0}.stack i{display:block;height:100%}.stack .e{background:#ef4444}.stack .a{background:#f59e0b}.stack .s{background:#22c55e}.cmpRow{display:grid;grid-template-columns:130px 1fr 170px;gap:10px;align-items:center;margin:8px 0}@media(max-width:640px){.cmpRow{grid-template-columns:86px 1fr}.cmpRow small{grid-column:2}}@media(max-width:640px){td:nth-child(2),th:nth-child(2){min-width:132px}.seg button{padding:8px 9px}main{padding:8px}header{padding:20px 12px}}@media print{header,.toolbar,.noPrint{display:none} .wrap{overflow:visible;max-height:none} table{min-width:100%}}
-</style></head><body>
-<header><h1>Sistema de Evaluación — Nivel Primario</h1><p>Diagnóstica (septiembre) · Seguimiento noviembre, marzo y mayo · Lengua Española, Matemática, Ciencias Sociales y Ciencias de la Naturaleza · Niveles de lectura (1.er ciclo)</p><div class="toolbar"><label>Período <select id="periodo"><option value="diagnostica-sep">Diagnóstica — Septiembre</option><option value="seguimiento-nov" selected>Seguimiento — Noviembre</option><option value="seguimiento-mar">Seguimiento — Marzo</option><option value="seguimiento-may">Seguimiento — Mayo</option></select></label><span id="saveState" class="muted" style="color:#dbeafe">Autoguardado activo</span></div></header>
-<main id="app"></main>
-<script src="data.js"></script>
-<script>
-const {students:ST,config:CFG,teachers:TEACH}=window.APP_DATA;
-const subjName={LE:'Lengua Española',MAT:'Matemática',CS:'Ciencias Sociales',CN:'Ciencias de la Naturaleza'};
-let ciclo=null, current=null, evals=JSON.parse(localStorage.getItem('evals')||'{}'), readLv=JSON.parse(localStorage.getItem('readLv')||'{}');
-const periodo=()=>document.getElementById('periodo').value;
-const key=(s,sub)=>`${periodo()}|${s.grado}-${s.seccion}|${sub}|${s.matricula}`;
-const rkey=s=>`${periodo()}|${s.grado}-${s.seccion}|LECT|${s.matricula}`;
-function save(){localStorage.setItem('evals',JSON.stringify(evals));localStorage.setItem('readLv',JSON.stringify(readLv));let el=document.getElementById('saveState');el.textContent='Guardando…';fetch('/.netlify/functions/api',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({periodo:periodo(),evals,readLv})}).catch(()=>{}).finally(()=>el.textContent='✓ Autoguardado '+new Date().toLocaleTimeString())}
-document.getElementById('periodo').onchange=()=>render();
-function render(){
- const app=document.getElementById('app');
- if(!ciclo){app.innerHTML=`<h2>Seleccione el ciclo</h2><div class="cards"><div class="card" onclick="ciclo=1;render()"><h3>📚 Primer Ciclo</h3><p>1.º a 3.º — Lengua Española, Matemática y Niveles de Lectura</p><button class="btn">Entrar</button></div><div class="card" onclick="ciclo=2;render()"><h3>🔬 Segundo Ciclo</h3><p>4.º a 6.º — Lengua Española, Matemática, Ciencias Sociales y Ciencias de la Naturaleza</p><button class="btn">Entrar</button></div></div><p class="muted">Coordinación: use el ciclo correspondiente para supervisar sin ver el otro ciclo. Sin datos de prueba: los listados provienen del documento oficial adjunto (443 estudiantes).</p>`;return}
- if(!current){ // dashboard teachers unique
-  const seen={},cards=[];
-  TEACH.filter(t=>(t.grado<=3)===(ciclo===1)).forEach(t=>{let k=t.nombre; if(!seen[k]){seen[k]={nombre:t.nombre,asig:new Set(),secs:new Set()};cards.push(seen[k])} seen[k].asig.add(subjName[t.asignatura]); seen[k].secs.add(t.grado+'°'+t.seccion)});
-  app.innerHTML=`<div class="toolbar"><button class="btn g" onclick="ciclo=null;render()">← Ciclos</button><h2>${ciclo===1?'Primer':'Segundo'} Ciclo — Docentes</h2><button class="btn" onclick="showAnalysis()">📊 Supervisión y análisis</button><button class="btn g" onclick="districtReport()">📄 Consolidado distrito (formato sistematización)</button></div><div class="cards">${cards.map(c=>`<div class="card" onclick="openTeacher('${c.nombre.replace(/'/g,"\\'")}')"><h3>${c.nombre}</h3><p>${[...c.asig].join(', ')}</p><p class="muted">${[...c.secs].join(' · ')}</p><div class="bar"><i style="width:${progress(c.nombre)}%"></i></div><small>${progress(c.nombre)}% completado en este período</small></div>`).join('')}</div>`;return}
- renderMatrix();
-}
-function progress(name){let tot=0,done=0;TEACH.filter(t=>t.nombre===name).forEach(t=>{ST.filter(s=>s.grado===t.grado&&s.seccion===t.seccion).forEach(s=>{(CFG[t.grado+'-'+t.asignatura]||[]).forEach(ind=>{tot++; if(evals[key(s,t.asignatura)]?.[ind.code])done++})})});return tot?Math.round(done/tot*100):0}
-window.openTeacher=n=>{current={teacher:n};renderTeacher()};
-function renderTeacher(){const app=document.getElementById('app');const as=TEACH.filter(t=>t.nombre===current.teacher);app.innerHTML=`<div class="toolbar"><button class="btn g" onclick="current=null;render()">← Docentes</button><h2>${current.teacher}</h2></div><div class="cards">${as.map((t,i)=>`<div class="card" onclick="openMatrix(${t.grado},'${t.seccion}','${t.asignatura}')"><h3>${t.grado}° ${t.seccion} — ${subjName[t.asignatura]}</h3><p class="muted">${(CFG[t.grado+'-'+t.asignatura]||[]).length} indicadores oficiales</p></div>`).join('')}${ciclo===1?as.filter((v,i,a)=>a.findIndex(x=>x.grado===v.grado&&x.seccion===v.seccion)===i).map(t=>`<div class="card" onclick="openMatrix(${t.grado},'${t.seccion}','LECT')"><h3>${t.grado}° ${t.seccion} — Niveles de Lectura</h3><p class="muted">Fluido · No fluido · Palabras · Sílabas · Imágenes</p></div>`).join(''):''}</div><h3>Estudiantes por sección (editable)</h3>${[...new Set(as.map(t=>t.grado+'-'+t.seccion))].map(gs=>{let [g,s]=gs.split('-');return `<h4>${g}° ${s}</h4><ul>${ST.filter(x=>x.grado==g&&x.seccion===s).map(x=>`<li>${x.matricula} — ${x.nombre} <button onclick="editStudent('${x.matricula}')">✎</button></li>`).join('')}</ul><button class="btn g" onclick="addStudent(${g},'${s}')">+ Inscribir estudiante</button>`}).join('')}`}
-window.editStudent=m=>{let s=ST.find(x=>x.matricula===m);let n=prompt('Nombre completo',s.nombre);if(n){s.nombre=n;save();renderTeacher()}}
-window.addStudent=(g,s)=>{let m=prompt('Matrícula (ej. 26-0000)');if(!m)return;let n=prompt('Nombre completo');if(!n)return;ST.push({matricula:m,nombre:n,grado:g,seccion:s});save();renderTeacher()}
-window.openMatrix=(g,s,sub)=>{current={...current,grado:g,seccion:s,sub};renderMatrix()}
-function renderMatrix(){const app=document.getElementById('app');const inds=sub=>CFG[current.grado+'-'+current.sub]||[];const list=ST.filter(s=>s.grado===current.grado&&s.seccion===current.seccion);
- if(current.sub==='LECT'){app.innerHTML=headerMatrix('Niveles de Lectura')+`<div class="rub"><b>Criterios oficiales (Orientaciones 1.er ciclo):</b> Lector de textos con fluidez: lee con ritmo, entonación y comprensión. Sin fluidez: pausas, errores o silabeo. Palabras: reconoce palabras aisladas. Sílabas: reconoce sílabas dentro de algunas palabras. Imágenes: interpreta imágenes, no decodifica texto.</div><div class="wrap"><table><thead><tr><th>#</th><th>Nombres de estudiantes</th>${['Fluido','No fluido','Palabras','Sílabas','Imágenes'].map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>${list.map((s,i)=>`<tr><td>${i+1}</td><td>${s.nombre}</td>${['Fluido','No fluido','Palabras','Sílabas','Imágenes'].map(v=>`<td><button class="seg" style="border:0"><button onclick="setRead('${s.matricula}','${v}')" class="${readLv[rkey(s)]===v?'on':''}" data-v="S">${readLv[rkey(s)]===v?'✔':'○'}</button></button></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;return}
- const cfg=inds(current.sub);
- app.innerHTML=headerMatrix(subjName[current.sub])+rubricPanel()+`
- <div class="wrap"><table><thead><tr><th rowspan="2">#</th><th rowspan="2">Nombres de estudiantes (correctos)</th>${cfg.map(ind=>`<th colspan="3">${ind.code}. ${ind.text}</th>`).join('')}</tr><tr>${cfg.map(()=>`<th>E</th><th>A</th><th>S</th>`).join('')}</tr></thead><tbody>
- ${list.map((s,i)=>`<tr><td>${i+1}</td><td>${s.nombre}<br><small>${s.matricula}</small></td>${cfg.map(ind=>{let v=evals[key(s,current.sub)]?.[ind.code]||'';return `<td colspan="3"><div class="seg">${['E','A','S',''].map(x=>`<button data-v="${x}" class="${v===x?'on':''}" onclick="setVal('${s.matricula}','${ind.code}','${x}')">${x||'—'}</button>`).join('')}</div></td>`}).join('')}</tr>`).join('')}
- <tr><td colspan="2"><b>Total</b></td>${cfg.map(ind=>{let c={E:0,A:0,S:0};list.forEach(s=>{let v=evals[key(s,current.sub)]?.[ind.code];if(c[v]!==undefined)c[v]++});return `<td colspan="3">E:${c.E} A:${c.A} S:${c.S}</td>`}).join('')}</tr>
- </tbody></table></div><p class="muted">Formato oficial: Instrumento para el docente consolidar resultados — Centro, sección, matriculados/evaluados y E: Elemental A: Aceptable S: Satisfactorio. Primera fila y columnas de estudiante fijas al hacer scroll.</p>`}
-function headerMatrix(t){return `<div class="toolbar noPrint"><button class="btn g" onclick="renderTeacher()">← ${current.teacher}</button><h2>${current.grado}° ${current.seccion} — ${t}</h2><button class="btn" onclick="window.print()">🖨 Imprimir / PDF oficial docente</button><button class="btn g" onclick="coordReport()">Consolidado coordinador</button></div><div class="card"><b>Centro Educativo:</b> __________________ &nbsp; <b>Sección:</b> ${current.seccion} &nbsp; <b>Matriculados:</b> ${ST.filter(s=>s.grado===current.grado&&s.seccion===current.seccion).length} &nbsp; <b>Evaluados:</b> <span id="evCount"></span> &nbsp; <b>Período:</b> ${periodo()}</div>`}
-window.setVal=(m,code,v)=>{let s=ST.find(x=>x.matricula===m);let k=key(s,current.sub);evals[k]=evals[k]||{};evals[k][code]=v;save();renderMatrix()}
-window.setRead=(m,v)=>{let s=ST.find(x=>x.matricula===m);readLv[rkey(s)]=v;save();renderMatrix()}
-function esc(x){return String(x||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function rubricPanel(){let r=(window.APP_DATA.rubrics||{})[current.grado+'-'+current.sub];if(!r)return '<div class="rub">Rúbrica no localizada en el documento fuente.</div>';return `<details class="rub"><summary>📋 Ver rúbrica completa oficial — ${subjName[current.sub]} ${current.grado}° · por ítem, Elemental / Aceptable / Satisfactorio (texto textual)</summary><div class="rubBody">${esc(r.text)}</div><p class="muted">Fuente: ${esc(r.source)} · págs. ${r.pages.join(', ')} · Se reproduce el texto extraído del documento oficial; consérvese el PDF como referencia de formato.</p></details>`}
-function aggP(per,filterFn){let out={};Object.entries(CFG).forEach(([k,inds])=>{let [g,sub]=k.split('-');inds.forEach(ind=>{let c={E:0,A:0,S:0};ST.filter(s=>s.grado==g&&filterFn(s,sub)).forEach(s=>{let v=evals[`${per}|${g}-${s.seccion}|${sub}|${s.matricula}`]?.[ind.code];if(c[v]!==undefined)c[v]++});out[k+'|'+ind.code]={...c,text:ind.text,grado:g,sub}}) });return out}
-function agg(filterFn){let out={};Object.entries(CFG).forEach(([k,inds])=>{let [g,sub]=k.split('-');inds.forEach(ind=>{let c={E:0,A:0,S:0};ST.filter(s=>s.grado==g&&filterFn(s,sub)).forEach(s=>{let v=evals[`${periodo()}|${g}-${s.seccion}|${sub}|${s.matricula}`]?.[ind.code];if(c[v]!==undefined)c[v]++});out[k+'|'+ind.code]={...c,text:ind.text,grado:g,sub}}) });return out}
-window.showAnalysis=()=>{let a=agg((s,sub)=>(s.grado<=3)===(ciclo===1));let risks=[];ST.filter(s=>(s.grado<=3)===(ciclo===1)).forEach(s=>{let e=0,t=0;TEACH.filter(x=>x.grado===s.grado&&x.seccion===s.seccion).forEach(x=>{(CFG[x.grado+'-'+x.asignatura]||[]).forEach(ind=>{let v=evals[key(s,x.asignatura)]?.[ind.code];if(v){t++;if(v==='E')e++}})});if(t&&e/t>=.5)risks.push({s,e,t})});
- document.getElementById('app').innerHTML=`<div class="toolbar"><button class="btn g" onclick="current=null;render()">← Volver</button><h2>Supervisión — ${ciclo===1?'Primer':'Segundo'} Ciclo</h2><button class="btn" onclick="window.print()">📄 Exportar gráficos a PDF</button><button class="btn g" onclick="coordReport()">Consolidado coordinador A–H</button></div>
- <div class="grid">${Object.values(a).map(x=>{let tot=x.E+x.A+x.S||1;return `<div class="kpi"><b>${x.grado}° ${subjName[x.sub]} · ${x.text}</b><div class="stack"><i class="e" style="width:${x.E/tot*100}%"></i><i class="a" style="width:${x.A/tot*100}%"></i><i class="s" style="width:${x.S/tot*100}%"></i></div><small>E ${x.E} (${Math.round(x.E/tot*100)}%) · A ${x.A} (${Math.round(x.A/tot*100)}%) · S ${x.S} (${Math.round(x.S/tot*100)}%)</small></div>`}).join('')}</div><h3>📈 Comparación entre períodos — Sep · Nov · Mar · May (% global E/A/S por grado y área)</h3>${(()=>{let pers=[['diagnostica-sep','Sep'],['seguimiento-nov','Nov'],['seguimiento-mar','Mar'],['seguimiento-may','May']];let groups=[...new Set(Object.values(a).map(x=>x.grado+'-'+x.sub))];return groups.map(gr=>{let [g,sub]=gr.split('-');return `<div class="kpi"><b>${g}° ${subjName[sub]}</b>${pers.map(([per,lab])=>{let vals=Object.values(aggP(per,(s,su)=>(s.grado<=3)===(ciclo===1))).filter(x=>x.grado==g&&x.sub===sub);let c=vals.reduce((acc,x)=>({E:acc.E+x.E,A:acc.A+x.A,S:acc.S+x.S}),{E:0,A:0,S:0});let tot=c.E+c.A+c.S||1;return `<div class="cmpRow"><span>${lab}</span><div class="stack"><i class="e" style="width:${c.E/tot*100}%"></i><i class="a" style="width:${c.A/tot*100}%"></i><i class="s" style="width:${c.S/tot*100}%"></i></div><small>E ${c.E} · A ${c.A} · S ${c.S} (${Math.round(c.S/tot*100)}% S)</small></div>`}).join('')}</div>`}).join('')})()}
- <h3>⚠ Estudiantes con mayores riesgos (≥50% Elemental)</h3>${risks.length?`<ul>${risks.map(r=>`<li><b>${r.s.nombre}</b> — ${r.s.grado}°${r.s.seccion} · ${r.e}/${r.t} indicadores en Elemental → Plan de reforzamiento: tutoría focalizada, retroalimentación diaria y seguimiento en próximo período.</li>`).join('')}</ul>`:'<p>Sin estudiantes en riesgo con los datos registrados.</p>'}
- <h3>Análisis por sección y asignatura para planes de reforzamiento</h3><p>Priorizar indicadores con mayor % Elemental (tarjetas superiores). Acciones sugeridas: agrupamiento flexible, actividades manipulativas/digitales según competencia, reevaluación en marzo/mayo y registro anecdótico.</p>
- <h3>Progreso docente</h3><div class="cards">${[...new Set(TEACH.filter(t=>(t.grado<=3)===(ciclo===1)).map(t=>t.nombre))].map(n=>`<div class="kpi"><b>${n}</b><div class="bar"><i style="width:${progress(n)}%"></i></div>${progress(n)}%</div>`).join('')}</div>`}
-window.coordReport=(g,s)=>{g=g|| (current?current.grado:(ciclo===1?1:4)); s=s|| (current?current.sub:'LE'); let grades=ciclo===1?[1,2,3]:[4,5,6]; let subs=ciclo===1?['LE','MAT']:['LE','MAT','CS','CN']; if(!grades.includes(+g))g=grades[0]; if(!subs.includes(s))s='LE'; let inds=CFG[g+'-'+s]||[]; let secs=['A','B','C','D','E','F','G','H']; let per=periodo();
- let rows=secs.map(sec=>{let list=ST.filter(x=>x.grado==g&&x.seccion===sec); let ev=list.filter(x=>inds.some(ind=>evals[`${per}|${g}-${sec}|${s}|${x.matricula}`]?.[ind.code])).length; let cells=inds.map(ind=>{let c={E:0,A:0,S:0};list.forEach(x=>{let v=evals[`${per}|${g}-${sec}|${s}|${x.matricula}`]?.[ind.code];if(c[v]!==undefined)c[v]++});return c}); return {sec,mat:list.length,ev,cells}});
- let tot={mat:rows.reduce((a,r)=>a+r.mat,0),ev:rows.reduce((a,r)=>a+r.ev,0),cells:inds.map((_,i)=>({E:rows.reduce((a,r)=>a+r.cells[i].E,0),A:rows.reduce((a,r)=>a+r.cells[i].A,0),S:rows.reduce((a,r)=>a+r.cells[i].S,0)}))};
- document.getElementById('app').innerHTML=`<div class="toolbar noPrint"><button class="btn g" onclick="current?renderMatrix():(current=null,render())">← Volver</button><h2>Consolidado Coordinador — ${g}° ${subjName[s]}</h2><label>Grado <select onchange="coordReport(this.value,'${s}')">${grades.map(x=>`<option ${x==g?'selected':''}>${x}</option>`).join('')}</select></label><label>Área <select onchange="coordReport('${g}',this.value)">${subs.map(x=>`<option value="${x}" ${x===s?'selected':''}>${subjName[x]}</option>`).join('')}</select></label><button class="btn" onclick="window.print()">Exportar PDF</button></div><div class="card"><b>Centro Educativo:</b> __________________ <b>Cantidad matriculados:</b> ${tot.mat} <b>Cantidad evaluados:</b> ${tot.ev} <b>Período:</b> ${per}</div><div class="wrap"><table><thead><tr><th rowspan="2">Secciones</th><th rowspan="2">Matrícula</th><th rowspan="2">Total evaluados</th>${inds.map(ind=>`<th colspan="3">${ind.code}. ${ind.text}</th>`).join('')}</tr><tr>${inds.map(()=>`<th>E</th><th>A</th><th>S</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr><td><b>${r.sec}</b></td><td>${r.mat}</td><td>${r.ev}</td>${r.cells.map(c=>`<td>${c.E}</td><td>${c.A}</td><td>${c.S}</td>`).join('')}</tr>`).join('')}<tr><td><b>Total</b></td><td><b>${tot.mat}</b></td><td><b>${tot.ev}</b></td>${tot.cells.map(c=>`<td><b>${c.E}</b></td><td><b>${c.A}</b></td><td><b>${c.S}</b></td>`).join('')}</tr></tbody></table></div><p class="muted">E: Elemental · A: Aceptable · S: Satisfactorio · Formato: Instrumento para el coordinador pedagógico/director consolidar resultados, secciones A–H.</p>`}
-window.districtReport=()=>{ // formato Sistematización: cantidades generales por grado/área/indicador E-A-S (+ lectura 1er ciclo)
- let a=agg(()=>true);let rows=Object.values(a).filter(x=>(x.grado<=3)===(ciclo===1));
- document.getElementById('app').innerHTML=`<div class="toolbar noPrint"><button class="btn g" onclick="current=null;render()">← Volver</button><button class="btn" onclick="window.print()">Exportar PDF distrito</button></div><h2>Sistematización Evaluación ${periodo().includes('diagnostica')?'Diagnóstica':'de Seguimiento'} — ${ciclo===1?'Primer':'Segundo'} Ciclo, Nivel Primario</h2><p>Datos generales del centro educativo: Código SIGERD _____ · Nombre __________________ · Regional _____ · Distrito _____ · Sector _____ · Tanda _____</p><table style="min-width:100%"><thead><tr><th>Grado</th><th>Área</th><th>Indicador</th><th>Elemental</th><th>Aceptable</th><th>Satisfactorio</th><th>Suma</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${x.grado}°</td><td>${subjName[x.sub]}</td><td style="text-align:left">${x.text}</td><td>${x.E}</td><td>${x.A}</td><td>${x.S}</td><td>${x.E+x.A+x.S}</td></tr>`).join('')}</tbody></table>${ciclo===1?`<h3>Niveles de Lectura por grado</h3>${[1,2,3].map(g=>{let c={'Fluido':0,'No fluido':0,'Palabras':0,'Sílabas':0,'Imágenes':0};ST.filter(s=>s.grado===g).forEach(s=>{let v=readLv[rkey(s)];if(c[v]!==undefined)c[v]++});return `<p>${g}°: Fluido ${c.Fluido} · No fluido ${c['No fluido']} · Palabras ${c.Palabras} · Sílabas ${c.Sílabas} · Imágenes ${c.Imágenes}</p>`}).join('')}`:''}<p class="muted">Formato conforme al documento “Sistematización Evaluación de Seguimiento - 1er y 2do Ciclo.pdf”: cantidades generales por grado, área e indicador.</p>`}
-render();
-</script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sistema de Evaluación Diagnóstica y de Seguimiento - Nivel Primario (1er y 2do Ciclo)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <!-- BARRA SUPERIOR FIJA -->
+  <header class="topbar no-print">
+    <div class="topbar-brand" onclick="App.goLanding()" title="Volver a Selección de Ciclo">
+      <div class="brand-logo">CSD</div>
+      <div class="brand-text">
+        <span class="brand-kicker">MINERD · COLEGIO SANTO DOMINGO</span>
+        <h1 class="brand-title">Evaluación Diagnóstica y de Seguimiento · Primaria</h1>
+      </div>
+    </div>
+
+    <div class="topbar-controls">
+      <!-- Selector de Período Evaluativo -->
+      <div class="control-group">
+        <label for="selectPeriodo">Período:</label>
+        <select id="selectPeriodo" onchange="App.changePeriodo(this.value)">
+          <option value="DIAG_SEP">Diagnóstica · Septiembre</option>
+          <option value="SEG_NOV" selected>1er Seguimiento · Noviembre</option>
+          <option value="SEG_MAR">2do Seguimiento · Marzo</option>
+          <option value="SEG_MAY">3er Seguimiento · Mayo</option>
+        </select>
+      </div>
+
+      <!-- Selector Rápido de Ciclo -->
+      <div class="cycle-switcher" id="cycleSwitcher">
+        <button type="button" class="cycle-pill" id="btnCycle1" onclick="App.selectCycle(1)">1er Ciclo (1º-3º)</button>
+        <button type="button" class="cycle-pill" id="btnCycle2" onclick="App.selectCycle(2)">2do Ciclo (4º-6º)</button>
+      </div>
+
+      <!-- Estado de Autoguardado Neon.tech -->
+      <div class="sync-badge" id="syncBadge" title="Estado de sincronización con Neon.tech">
+        <span class="sync-dot" id="syncDot"></span>
+        <span id="syncText">Autoguardado activo</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- NAVEGACIÓN PRINCIPAL DEL CICLO ACTIVO -->
+  <nav class="subnav no-print" id="cycleNav" style="display:none;">
+    <div class="subnav-inner">
+      <button class="nav-tab" data-view="landing" onclick="App.goLanding()">
+        <span>🏠</span> Ciclos
+      </button>
+      <button class="nav-tab active" data-view="docentes" onclick="App.setView('docentes')">
+        <span>👩‍🏫</span> Docentes y Secciones
+      </button>
+      <button class="nav-tab" data-view="matriz" onclick="App.setView('matriz')">
+        <span>📋</span> Matriz Oficial y Rúbricas
+      </button>
+      <button class="nav-tab" data-view="supervision" onclick="App.setView('supervision')">
+        <span>📊</span> Supervisión y Consolidados
+      </button>
+      <button class="nav-tab" data-view="sistematizacion" onclick="App.setView('sistematizacion')">
+        <span>🏛️</span> Sistematización Distrito
+      </button>
+      <button class="nav-tab" data-view="analisis" onclick="App.setView('analisis')">
+        <span>📈</span> Análisis, Riesgo y Reforzamiento
+      </button>
+      <button class="nav-tab" data-view="alumnos" onclick="App.setView('alumnos')">
+        <span>🎓</span> Matrícula (<span id="navCountAlumnos">0</span>)
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="main-container">
+    <!-- VISTA 0: LANDING DE INTRODUCCIÓN (2 TARJETAS DE CICLO) -->
+    <section id="view-landing" class="view-section active">
+      <div class="hero-intro">
+        <span class="hero-badge">AÑO ESCOLAR 2026–2027 · EDUCACIÓN PRIMARIA</span>
+        <h2>Sistema Integrado de Registro, Consolidación y Seguimiento Pedagógico</h2>
+        <p>
+          Seleccione el ciclo correspondiente para acceder al panel de docentes asignados, matrices oficiales con rúbricas,
+          supervisión de coordinación sin interferencia del otro ciclo, reportes distritales SIGERD y planes de reforzamiento.
+        </p>
+      </div>
+
+      <div class="cycle-cards-grid">
+        <!-- TARJETA PRIMER CICLO -->
+        <article class="cycle-card cycle-card-1" onclick="App.selectCycle(1)">
+          <div class="cycle-card-header">
+            <span class="cycle-tag">PRIMER CICLO · NIVEL PRIMARIO</span>
+            <span class="cycle-grades">1.º, 2.º y 3.er Grado</span>
+          </div>
+          <h3>Evaluación y Seguimiento · Primer Ciclo</h3>
+          <p class="cycle-desc">
+            Registro por sección (A, B, C) de <strong>Niveles de Lectura</strong> (Fluido, No fluido, Palabras, Sílabas, Imágenes),
+            <strong>Lengua Española</strong> y <strong>Matemática</strong> con rúbricas oficiales MINERD.
+          </p>
+          <div class="cycle-metrics" id="landingMetricsC1"></div>
+          <div class="cycle-card-footer">
+            <span class="coord-label">9 Secciones · 9 Docentes Titulares</span>
+            <button type="button" class="btn-primary">Entrar a Primer Ciclo →</button>
+          </div>
+        </article>
+
+        <!-- TARJETA SEGUNDO CICLO -->
+        <article class="cycle-card cycle-card-2" onclick="App.selectCycle(2)">
+          <div class="cycle-card-header">
+            <span class="cycle-tag">SEGUNDO CICLO · NIVEL PRIMARIO</span>
+            <span class="cycle-grades">4.º, 5.º y 6.º Grado</span>
+          </div>
+          <h3>Evaluación y Seguimiento · Segundo Ciclo</h3>
+          <p class="cycle-desc">
+            Evaluación departamentalizada por asignatura en <strong>Lengua Española</strong> (incluye Fluidez en 4.º),
+            <strong>Matemática</strong>, <strong>Ciencias Sociales</strong> y <strong>Ciencias de la Naturaleza</strong>.
+          </p>
+          <div class="cycle-metrics" id="landingMetricsC2"></div>
+          <div class="cycle-card-footer">
+            <span class="coord-label">9 Secciones · 8 Docentes por Área · Coord. Marije Guerrero</span>
+            <button type="button" class="btn-primary btn-indigo">Entrar a Segundo Ciclo →</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- VISTA 1: DASHBOARD DE TARJETAS DE PROFESORES DEL CICLO -->
+    <section id="view-docentes" class="view-section">
+      <div id="docentesContainer"></div>
+    </section>
+
+    <!-- VISTA 2: MATRIZ OFICIAL DE EVALUACIÓN + RÚBRICAS -->
+    <section id="view-matriz" class="view-section">
+      <div id="matrizContainer"></div>
+    </section>
+
+    <!-- VISTA 3: SUPERVISIÓN DE COORDINACIÓN E INSTRUMENTOS OFICIALES DE CONSOLIDACIÓN -->
+    <section id="view-supervision" class="view-section">
+      <div id="supervisionContainer"></div>
+    </section>
+
+    <!-- VISTA 4: REPORTE OFICIAL DE SISTEMATIZACIÓN PARA EL DISTRITO -->
+    <section id="view-sistematizacion" class="view-section">
+      <div id="sistematizacionContainer"></div>
+    </section>
+
+    <!-- VISTA 5: ANÁLISIS ESTADÍSTICO, RIESGO Y PLAN DE REFORZAMIENTO (EXPORTABLE A PDF) -->
+    <section id="view-analisis" class="view-section">
+      <div id="analisisContainer"></div>
+    </section>
+
+    <!-- VISTA 6: GESTIÓN DE MATRÍCULA OFICIAL (INSCRIBIR Y EDITAR EN NEON.TECH) -->
+    <section id="view-alumnos" class="view-section">
+      <div id="alumnosContainer"></div>
+    </section>
+  </main>
+
+  <!-- MODAL PARA RÚBRICA DETALLADA E INSCRIPCIÓN/EDICIÓN DE ALUMNOS -->
+  <div class="modal-backdrop no-print" id="appModal" style="display:none;" onclick="if(event.target===this) App.closeModal()">
+    <div class="modal-card" id="appModalContent"></div>
+  </div>
+
+  <script src="./data-oficial.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
